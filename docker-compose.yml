@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  api-service:
+    container_name: ol-api-service
+    restart: on-failure
+    build: ./oompa-loompa-web/api/
+    env_file:
+      - oompaloompa.env
+    links:
+      - mongodb
+    ports:
+      - "20211:20211"
+    volumes:
+      - ./storage:/opt/napptilus
+
+  mongodb:
+    image: mongo:4.4.2-bionic
+    restart: always
+    ports:
+      - 27018:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - ./mongodb_data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_AUTH_USERNAME: root
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: root
+      ME_CONFIG_MONGODB_SERVER: mongodb
+
+
